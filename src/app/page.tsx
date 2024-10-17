@@ -1,13 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import MessageArea from '@/components/message-area';
 
-import { SERVER } from '@/lib/server';
+import Navbar from '@/components/navbar';
+
+import Loading from '@/components/loading';
 
 export default async function Page() {
-	const { status } = await SERVER.status.query();
-
 	return (
-		<div>
-			<h1 className="text-3xl font-extrabold">{status}</h1>
-		</div>
+		<>
+			<Navbar />
+			<Loading>
+				<MessageArea className="w-full h-full" />
+			</Loading>
+		</>
 	);
 }

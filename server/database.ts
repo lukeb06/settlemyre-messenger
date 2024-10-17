@@ -2,7 +2,6 @@ import { hash } from 'bun';
 import { Database } from 'bun:sqlite';
 
 const db = new Database('database.db');
-
 const sql = (query: TemplateStringsArray, ...args: any[]) => {
 	let queryString = '';
 	let queryArr = Array.from(query);
@@ -54,10 +53,71 @@ function dropTable(tableName: string) {
 	}
 }
 
-function buildDatabase() {}
+class User {
+	id: number;
+	username: string;
+	passwordHash: string;
+	displayName: string;
+
+	constructor(id: number, username: string, passwordHash: string, displayName: string) {
+		this.id = id;
+		this.username = username;
+		this.passwordHash = passwordHash;
+		this.displayName = displayName;
+	}
+
+	checkPassword(password: string) {
+		return this.passwordHash === hash(password).toString();
+	}
+}
+
+export class Users {
+	static get(id: number | bigint) {
+		return sql`SELECT * FROM users WHERE id=?`.as(User).get(id as number);
+	}
+
+	static find(username: string) {
+		return sql`SELECT * FROM users WHERE username=?`.as(User).get(username);
+	}
+
+	static create(username: string, password: string, displayName: string | null = null) {
+		username = username.toLowerCase();
+
+		const passwordHash = hash(password.toLowerCase()).toString();
+
+		if (displayName == null)
+			displayName = username.slice(0, 1).toUpperCase() + username.slice(1);
+
+		const { lastInsertRowid } = sql`
+			INSERT INTO users (username, passwordHash, displayName)
+			VALUES (?1, ?2, ?3)
+		`.run(username, passwordHash, displayName);
+
+		return Users.get(lastInsertRowid);
+	}
+}
+
+function dropDatabase() {
+	dropTable('users');
+}
+
+function buildDatabase() {
+	dropDatabase();
+
+	createTable('users', [
+		new PrimaryKey('id'),
+		new Column('username', 'TEXT', 'UNIQUE NOT NULL'),
+		new Column('passwordHash', 'TEXT', 'NOT NULL'),
+		new Column('displayName', 'TEXT', 'NOT NULL'),
+	]);
+}
 
 function testDatabase() {
 	buildDatabase();
+
+	const register = Users.create('register', '1387');
+	const admin = Users.create('admin', 'settlemyre');
+	console.log(register, admin);
 }
 
 testDatabase();
