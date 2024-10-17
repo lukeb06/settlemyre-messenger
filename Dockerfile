@@ -18,7 +18,7 @@ WORKDIR /app
 # Copy only package files to cache dependencies
 COPY package.json bun.lockb ./
 
-# Install dependencies using Bun (or npm fallback)
+# Install dependencies using Bun
 RUN bun install
 
 # Cache node_modules by creating a layer
