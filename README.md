@@ -1,15 +1,35 @@
-# create-l3-app
+# Settlemyre Messenger
 
-To install dependencies:
+## Setup
+
+-   Make sure you have [Bun](https://bun.sh) installed if you want to run locally.
+
+-   Must change the SERVER_IP in the /src/lib/server.ts file to the IP of your server.
+
+## Run Locally
+
+### Install dependencies
 
 ```bash
 bun install
 ```
 
-To run:
+### Run Development Server
 
 ```bash
-bun run index.ts
+bun dev
 ```
 
-This project was created using `bun init` in bun v1.1.29. [Bun](https://bun.sh) is a fast all-in-one JavaScript runtime.
+### Build for Production
+
+NOTE: Will not compile with bun.
+
+```bash
+npm run build
+```
+
+### Start
+
+```bash
+bun run start
+```
