@@ -21,6 +21,9 @@ services:
         ports:
             - 3001:3001
             - 80:5170
+# PORTS:
+# EXTERNAL (HOST) : INTERNAL (CONTAINER)
+
 # The commented out section below is an example of how to define a PostgreSQL
 # database that your application can use. `depends_on` tells Docker Compose to
 # start the database before your application. The `db-data` volume persists the
