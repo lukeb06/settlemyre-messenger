@@ -26,7 +26,6 @@ function testDatabase() {
 	buildDatabase(); // This is already present and will create the tables.
 
 	Users.create('example_username', 'example_password'); // This will create a new user with the given username and password. The password is hashed before being stored in the database.
-
 	Users.create('example_user', 'test123', 'Example User'); // This will create a new user with the given username, password, and display name.
 }
 ```
