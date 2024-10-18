@@ -1,5 +1,5 @@
 # Start with the oven/bun image
-FROM oven/bun:latest
+FROM oven/bun:latest AS builder
 
 # Set environment to production
 ENV NODE_ENV=production
@@ -32,6 +32,17 @@ RUN if [ -d /tmp/node_modules ]; then cp -R /tmp/node_modules/* node_modules/; f
 
 # Build the project
 RUN npm run build
+
+FROM oven/bun:latest AS runner
+
+ENV NODE_ENV=production
+
+WORKDIR /app
+
+COPY --from=builder /app/.next /app/.next
+COPY --from=builder /app/node_modules /app/node_modules
+COPY --from=builder /app/package.json /app/package.json
+COPY --from=builder /app/bun.lockb /app/bun.lockb
 
 # Expose the necessary ports
 EXPOSE 5170
