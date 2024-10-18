@@ -17,7 +17,7 @@
 
 If you dont yet have a database.db file, you can create one by referring to the /server/database.ts file.
 The database.ts file has a function called buildDatabase() which describes the database structure.
-If you know how to run the file with [Bun](https://bun.sh), then you can create the database.db file and the user entries by adding running the following code:
+You will have to use [Bun](https://bun.sh) to properly run the file, which will create the database.db file and the user entries by adding running the following code:
 
 ```typescript
 function testDatabase() {
@@ -29,6 +29,16 @@ function testDatabase() {
 	Users.create('example_user', 'test123', 'Example User'); // This will create a new user with the given username, password, and display name.
 }
 ```
+
+Now run the script:
+
+```bash
+bun run server/database.ts
+```
+
+Now you're database should be properly setup. Make sure to remove the test code from the database.ts file once you are done (to avoid pushing the credentials to GitHub).
+
+The database.ts file will be copied to the docker container so you don't need to worry about creating a new one once you build the project.
 
 ## Run Locally
 
