@@ -114,10 +114,6 @@ function buildDatabase() {
 
 function testDatabase() {
 	buildDatabase();
-
-	const register = Users.create('register', '1387');
-	const admin = Users.create('admin', 'settlemyre');
-	console.log(register, admin);
 }
 
-testDatabase();
+// testDatabase();
