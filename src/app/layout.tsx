@@ -47,12 +47,14 @@ import icon from '@/assets/icon.png';
 import type { Viewport, Metadata } from 'next';
 
 export const viewport: Viewport = {
-	themeColor: 'black',
+	initialScale: 1,
+	maximumScale: 1,
+	userScalable: false,
+	width: 'device-width',
 };
 
 export const metadata: Metadata = {
 	title: 'Settlemyre Messenger',
-	viewport: 'maximum-scale=1, width=device-width, initial-scale=1.0, user-scalable=no',
 	icons: {
 		icon: '/icon.png',
 		shortcut: '/icon.png',
