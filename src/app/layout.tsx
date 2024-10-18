@@ -44,18 +44,31 @@ import Head from 'next/head';
 
 import icon from '@/assets/icon.png';
 
+import type { Viewport, Metadata } from 'next';
+
+export const viewport: Viewport = {
+	themeColor: 'black',
+};
+
+export const metadata: Metadata = {
+	title: 'Settlemyre Messenger',
+	viewport: 'maximum-scale=1, width=device-width, initial-scale=1.0, user-scalable=no',
+	icons: {
+		icon: '/icon.png',
+		shortcut: '/icon.png',
+		apple: '/icon.png',
+		other: {
+			rel: 'apple-touch-icon-precomposed',
+			url: '/icon.png',
+		},
+	},
+};
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
 	return (
 		<html lang="en" suppressHydrationWarning>
 			<head>
 				<link rel="icon" type="image/png" href="/icon.png" />
-				<meta name="apple-mobile-web-app-title" content="Settlemyre Messenger" />
-				<meta
-					name="viewport"
-					key={1}
-					content="maximum-scale=1, width=device-width, initial-scale=1.0, user-scalable=no"
-				/>
-				<title>Settlemyre Messenger</title>
 			</head>
 			<body>
 				<LocalStorageProvider>

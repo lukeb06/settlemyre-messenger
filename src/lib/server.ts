@@ -15,7 +15,7 @@ export function updateToken(newToken: string) {
 }
 
 // const SERVER_IP = 'http://192.168.1.16:3001';
-const SERVER_IP = 'http://localhost:3001';
+const SERVER_IP = 'http://192.168.100.7:3001';
 
 export const endpoint = (path: string) => `${SERVER_IP}/${path}`;
 
