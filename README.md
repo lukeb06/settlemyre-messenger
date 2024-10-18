@@ -40,7 +40,7 @@ Now you're database should be properly setup. Make sure to remove the test code 
 
 The database.ts file will be copied to the docker container so you don't need to worry about creating a new one once you build the project.
 
-### Build with docker
+## Build with docker
 
 If you have [Bun](https://bun.sh) or NPM installed, you can build with an NPM script. Otherwise, use the default docker command.
 
