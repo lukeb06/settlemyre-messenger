@@ -51,6 +51,7 @@
 		"dev": "concurrently --kill-others \"next dev -p 5170\" \"bun run --watch server/index.ts\"",
 		"build": "next build",
 		"start": "concurrently --kill-others \"next start -p 5170\" \"bun run server/index.ts\"",
-		"lint": "next lint"
+		"lint": "next lint",
+		"build:docker": "docker compose up --build"
 	}
 }
