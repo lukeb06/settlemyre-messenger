@@ -4,7 +4,7 @@ import Navbar from '@/components/navbar';
 
 import Loading from '@/components/loading';
 
-export default async function Page() {
+export default function Page() {
 	return (
 		<>
 			<Navbar />

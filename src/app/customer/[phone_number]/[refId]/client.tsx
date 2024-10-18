@@ -91,7 +91,7 @@ export default function CustomerPageClient({ messages }: { messages: Messages })
 				>
 					<AutoExpandTextArea cref={messageBoxRef} />
 
-					<Button
+					{/* <Button
 						ref={pictureButtonRef}
 						className="my-1 mr-2 rounded-full text-base aspect-square"
 						size="icon"
@@ -102,8 +102,8 @@ export default function CustomerPageClient({ messages }: { messages: Messages })
 						}}
 					>
 						<ImagePlus />
-					</Button>
-					<Input
+					</Button> */}
+					{/* <Input
 						ref={pictureRef}
 						id="picture"
 						className="hidden"
@@ -136,7 +136,7 @@ export default function CustomerPageClient({ messages }: { messages: Messages })
 								pictureUtilsRef.current?.classList.add('hidden');
 							}
 						}}
-					></Input>
+					></Input> */}
 
 					<Button
 						onClick={sendMessage}

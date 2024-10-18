@@ -18,11 +18,14 @@ import { SERVER } from '@/lib/server';
 
 import { useCookies } from 'next-client-cookies';
 
+import { useRouter } from 'next/navigation';
+
 export default function Page() {
 	const usernameRef = React.useRef<HTMLInputElement>(null);
 	const passwordRef = React.useRef<HTMLInputElement>(null);
 
 	const cookies = useCookies();
+	const router = useRouter();
 
 	return (
 		<div className="w-full h-full flex flex-col justify-center items-center gap-10 -translate-y-20">
@@ -47,7 +50,8 @@ export default function Page() {
 						expires: new Date(Date.now() + 1000 * 60 * 60 * 6),
 					});
 
-					window.location.href = '/';
+					router.prefetch('/');
+					router.push('/');
 				}}
 			>
 				<Card className="w-full max-w-sm">

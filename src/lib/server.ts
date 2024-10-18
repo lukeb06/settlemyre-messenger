@@ -14,14 +14,15 @@ export function updateToken(newToken: string) {
 	token = newToken;
 }
 
-const SERVER_IP = 'http://192.168.1.16:3001';
+// const SERVER_IP = 'http://192.168.1.16:3001';
+const SERVER_IP = 'http://localhost:3001';
 
 export const endpoint = (path: string) => `${SERVER_IP}/${path}`;
 
 export const SERVER = createTRPCClient<AppRouter>({
 	links: [
 		httpBatchLink({
-			url: SERVER_IP,
+			url: SERVER_IP + '/trpc',
 			headers() {
 				return token ? { Authorization: `Basic ${token}` } : {};
 			},

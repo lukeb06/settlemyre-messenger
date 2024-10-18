@@ -18,8 +18,10 @@ services:
         environment:
             NODE_ENV: production
             CONFIG_FILE: /app/config.json
+            OPENAI_API_KEY: ${OPENAI_API_KEY}
+            PORT: ${PORT}
         ports:
-            - 3001:3001
+            - ${PORT}:${PORT}
             - 80:5170
 # PORTS:
 # EXTERNAL (HOST) : INTERNAL (CONTAINER)

@@ -10,6 +10,8 @@ import { useStore } from '@/hooks/use-store';
 
 import { Button } from './ui/button';
 
+import { useCookies } from 'next-client-cookies';
+
 export default function MessageList({
 	className,
 	messages,
@@ -28,6 +30,8 @@ export default function MessageList({
 	const [store, setStore]: any = useStore();
 
 	const [pixelsScrolledUp, setPixelsScrolledUp] = useState(0);
+
+	const cookies = useCookies();
 
 	const doScroll = () => {
 		if (store.prevLength === messages.length) return;
@@ -66,6 +70,10 @@ export default function MessageList({
 	useEffect(doScroll, [messages]);
 
 	useEffect(() => {
+		setTimeout(() => {
+			router.refresh();
+		});
+
 		const interval = setInterval(() => {
 			router.refresh();
 		}, 5000);

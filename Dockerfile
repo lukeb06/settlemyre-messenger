@@ -1,9 +1,6 @@
 # Start with the oven/bun image
 FROM oven/bun:latest AS builder
 
-# Set environment to production
-ENV NODE_ENV=production
-
 # Install dependencies for Node.js
 RUN apt-get update && apt-get install -y \
     curl \
@@ -35,8 +32,6 @@ RUN npm run build
 
 FROM oven/bun:latest AS runner
 
-ENV NODE_ENV=production
-
 WORKDIR /app
 
 COPY --from=builder /app/.next /app/.next
@@ -45,6 +40,7 @@ COPY --from=builder /app/package.json /app/package.json
 COPY --from=builder /app/bun.lockb /app/bun.lockb
 COPY --from=builder /app/server /app/server
 COPY --from=builder /app/public /app/public
+COPY --from=builder /app/database.db /app/database.db
 
 # Expose the necessary ports
 EXPOSE 5170

@@ -6,6 +6,30 @@
 
 -   Must change the SERVER_IP in the /src/lib/server.ts file to the IP of your server.
 
+### .env Setup
+
+-   Set the OPENAI_API_KEY to your OpenAI API key.
+-   Set the PORT to the port you want to run the server on. (Should match port at SERVER_IP in /src/lib/server.ts)
+-   Set the CONFIG_FILE to the path of the config.json file.
+-   Make sure that you have a database.db file in the root directory BEFORE building the project to docker.
+
+### Missing database.db file
+
+If you dont yet have a database.db file, you can create one by referring to the /server/database.ts file.
+The database.ts file has a function called buildDatabase() which describes the database structure.
+If you know how to run the file with [Bun](https://bun.sh), then you can create the database.db file and the user entries by adding running the following code:
+
+```typescript
+function testDatabase() {
+	// This function already exists and needs to be setup and called.
+	buildDatabase(); // This is already present and will create the tables.
+
+	Users.create('example_username', 'example_password'); // This will create a new user with the given username and password. The password is hashed before being stored in the database.
+
+	Users.create('example_user', 'test123', 'Example User'); // This will create a new user with the given username, password, and display name.
+}
+```
+
 ## Run Locally
 
 ### Install dependencies
