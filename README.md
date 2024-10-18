@@ -42,7 +42,7 @@ The database.ts file will be copied to the docker container so you don't need to
 
 ### Build with docker
 
-If you have [Bun](https://bun.sh) or NPM installed, you can build with project with the following command:
+If you have [Bun](https://bun.sh) or NPM installed, you can build with an NPM script. Otherwise, use the default docker command.
 
 Bun:
 
