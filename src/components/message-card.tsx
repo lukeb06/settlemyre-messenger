@@ -34,6 +34,13 @@ export default function MessageCard({
 	const isUserMessage = message.direction == 'OUTBOUND';
 	const userPhone = isUserMessage ? message.to_phone : message.from_phone;
 
+	const links = message.body?.match(/(https?:\/\/[^\s]+)/g) || [];
+	let messageBody = message.body || '';
+
+	links?.forEach((link, i) => {
+		messageBody = messageBody.replace(link, `Link ${i + 1}`);
+	});
+
 	return (
 		<div
 			id={`message-${message.id}`}
@@ -49,13 +56,19 @@ export default function MessageCard({
 				<CardHeader className="p-3 pb-1">
 					<CardTitle className="text-lg">
 						<span>{message.name}</span>{' '}
-						<span
-							className={`text-xs !m-0${
-								isUserMessage ? ' text-primary-foreground dark:text-gray-200' : ''
-							}`}
-						>
-							({message.category})
-						</span>
+						{message.category ? (
+							<span
+								className={`text-xs !m-0${
+									isUserMessage
+										? ' text-primary-foreground dark:text-gray-200'
+										: ''
+								}`}
+							>
+								({message.category})
+							</span>
+						) : (
+							<></>
+						)}
 					</CardTitle>
 
 					<CardDescription
@@ -96,7 +109,26 @@ export default function MessageCard({
 				</CardHeader>
 
 				<CardContent className="p-3 pt-0">
-					<p className="text-xl">{message.body}</p>
+					<p className="text-xl break-words">{messageBody}</p>
+					{links.length > 0 ? (
+						<p>
+							{links.map((link, i) => {
+								return (
+									<a
+										className="text-xl break-words"
+										key={i}
+										href={link}
+										target="_blank"
+										rel="noopener noreferrer"
+									>
+										{link}
+									</a>
+								);
+							})}
+						</p>
+					) : (
+						<></>
+					)}
 					{/* TODO */}
 					{message && message.media && message.media.length > 0 ? (
 						<ViewAttachments

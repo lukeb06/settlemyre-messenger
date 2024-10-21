@@ -35,6 +35,18 @@ import { Label } from '@/components/ui/label';
 import { useRouter } from 'next/navigation';
 
 import { useCookies } from 'next-client-cookies';
+import { useMediaQuery } from '@/hooks/use-media-query';
+
+import {
+	Sheet,
+	SheetContent,
+	SheetDescription,
+	SheetHeader,
+	SheetTitle,
+	SheetTrigger,
+} from '@/components/ui/sheet';
+import { Menu } from 'lucide-react';
+import ClientConversations from './client-conversations';
 
 // Convert ANY format phone number to 123-456-7890
 const convertToCounterpointNumber = (phoneNumber: string) => {
@@ -47,7 +59,7 @@ const convertToTwilioNumber = (phoneNumber: string) => {
 };
 
 const Navbar = () => {
-	// const isDesktop = useMediaQuery('md');
+	const isDesktop = useMediaQuery('lg');
 	const numberRef = useRef<HTMLInputElement>(null);
 	const router = useRouter();
 
@@ -70,6 +82,21 @@ const Navbar = () => {
 	return (
 		<NavigationMenu className="p-2 z-50">
 			<NavigationMenuList className="w-full justify-normal">
+				<NavigationMenuItem className="mr-2 lg:hidden">
+					<Sheet>
+						<SheetTrigger asChild>
+							<Button variant="outline" size="icon">
+								<Menu />
+							</Button>
+						</SheetTrigger>
+
+						<SheetContent side="left">
+							<br />
+							<ClientConversations />
+						</SheetContent>
+					</Sheet>
+				</NavigationMenuItem>
+
 				<NavigationMenuItem className="flex flex-grow">
 					<div className="flex h-full w-full flex-col overflow-hidden rounded-md bg-popover text-popover-foreground">
 						<form
@@ -90,7 +117,6 @@ const Navbar = () => {
 						</form>
 					</div>
 				</NavigationMenuItem>
-
 				<NavigationMenuItem className="!ml-2">
 					<ResponsiveDialog button={<Button className="text-white">Compose</Button>}>
 						<h2 className="pt-2 text-2xl font-medium">Compose message</h2>

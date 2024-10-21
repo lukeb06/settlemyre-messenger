@@ -12,6 +12,17 @@ import {
 } from '@/components/ui/navigation-menu';
 
 import {
+	Sheet,
+	SheetContent,
+	SheetDescription,
+	SheetHeader,
+	SheetTitle,
+	SheetTrigger,
+} from '@/components/ui/sheet';
+import { Menu } from 'lucide-react';
+import ClientConversations from './client-conversations';
+
+import {
 	Command,
 	CommandDialog,
 	CommandEmpty,
@@ -56,6 +67,21 @@ export default async function CustomerPageNavbar({
 	return (
 		<NavigationMenu className="p-2 z-50">
 			<NavigationMenuList className="w-full justify-normal">
+				<NavigationMenuItem className="mr-2 lg:hidden">
+					<Sheet>
+						<SheetTrigger asChild>
+							<Button variant="outline" size="icon">
+								<Menu />
+							</Button>
+						</SheetTrigger>
+
+						<SheetContent side="left">
+							<br />
+							<ClientConversations />
+						</SheetContent>
+					</Sheet>
+				</NavigationMenuItem>
+
 				<NavigationMenuItem>
 					<Button asChild className="pl-2 text-white">
 						<Link href={getLink()}>

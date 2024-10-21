@@ -2,13 +2,14 @@ import { publicProcedure } from './trpc';
 import { z } from 'zod';
 import axios from 'axios';
 
-import { Users } from './database';
+import { Users, LastRead } from './database';
 
 import {
 	getMessages as GetMessages,
 	getUserProfile,
 	sendMessage as SendMessage,
 	getUserProfileFromCustNo,
+	getMostRecentCustomerConversations,
 } from './ms-database';
 
 const status = publicProcedure.query(async () => {
@@ -53,7 +54,9 @@ const getMessages = publicProcedure.input(getMessagesInput).query(async ({ ctx, 
 const userProfileInput = z.object({
 	phone_number: z.string(),
 });
-const userProfile = publicProcedure.input(userProfileInput).query(async ({ input }) => {
+const userProfile = publicProcedure.input(userProfileInput).query(async ({ ctx, input }) => {
+	if (!ctx.user) return null;
+
 	if (!input.phone_number) return null;
 	return await getUserProfile(input.phone_number);
 });
@@ -64,7 +67,9 @@ const updateSubscriptionInput = z.object({
 });
 const updateSubscription = publicProcedure
 	.input(updateSubscriptionInput)
-	.mutation(async ({ input }) => {
+	.mutation(async ({ ctx, input }) => {
+		if (!ctx.user) return { success: false, reason: 'Unauthorized' };
+
 		const user = await getUserProfileFromCustNo(input.cust_no);
 		if (!user) return { success: false, reason: 'User not found' };
 		await user.updateSubscription(input.status);
@@ -77,14 +82,61 @@ const sendMessageInput = z.object({
 	category: z.string(),
 	name: z.string(),
 });
-const sendMessage = publicProcedure.input(sendMessageInput).mutation(async ({ input }) => {
-	console.log(input);
+const sendMessage = publicProcedure.input(sendMessageInput).mutation(async ({ ctx, input }) => {
+	if (!ctx.user) return { success: false };
+
 	if (!input.to) return { success: false };
 	if (!input.body) return { success: false };
 
-	await SendMessage(input.to, input.body, input.category, input.name);
+	// Customer Name = input.name
+
+	await SendMessage(input.to, input.body, input.category, ctx.user.displayName);
 
 	return { success: true };
+});
+
+const getReadStatusInput = z.object({
+	custPhone: z.string(),
+});
+const getReadStatus = publicProcedure.input(getReadStatusInput).query(async ({ ctx, input }) => {
+	if (!ctx.user) return { isRead: true };
+
+	const status = await LastRead.getReadStatus(ctx.user.id, input.custPhone);
+
+	return { isRead: status };
+});
+
+type RecentConvo = {
+	from: string;
+	body: string;
+	date: string;
+	name: string;
+	readStatus: boolean;
+};
+
+const getRecentConversations = publicProcedure.query(async ({ ctx }): Promise<RecentConvo[]> => {
+	if (!ctx.user) return [];
+
+	const convos = await Promise.all(
+		(await getMostRecentCustomerConversations())
+			.slice(0, 30)
+			.map((convo): Promise<RecentConvo | null> => {
+				return new Promise(async (resolve, reject) => {
+					if (!ctx.user) return resolve(null);
+					const readStatus = await LastRead.getReadStatus(ctx.user.id, convo.from);
+
+					resolve({
+						from: convo.from,
+						body: convo.body,
+						date: convo.date,
+						name: convo.name,
+						readStatus,
+					});
+				});
+			}),
+	);
+
+	return convos.filter(convo => convo != null);
 });
 
 export const procedures = {
@@ -94,4 +146,6 @@ export const procedures = {
 	userProfile,
 	updateSubscription,
 	sendMessage,
+	getReadStatus,
+	getRecentConversations,
 };

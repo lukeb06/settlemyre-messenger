@@ -3,14 +3,6 @@ import { Users } from './database';
 import type { FetchCreateContextFnOptions } from '@trpc/server/adapters/fetch';
 import type { Context as C } from 'hono';
 
-class ClientUser {
-	username: string;
-
-	constructor(username: string) {
-		this.username = username;
-	}
-}
-
 async function verifyUser(token: string) {
 	token = atob(token);
 
@@ -20,7 +12,7 @@ async function verifyUser(token: string) {
 	let user = Users.find(username);
 	if (user == null) return null;
 
-	if (user.checkPassword(password)) return new ClientUser(username);
+	if (user.checkPassword(password)) return user;
 
 	return null;
 }

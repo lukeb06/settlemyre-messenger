@@ -257,6 +257,51 @@ export const getMessages = (search: string = ''): Promise<Messages> => {
 	});
 };
 
+export const getMostRecentUserMessage = async (userPhone: string) => {
+	userPhone = phoneToCP(userPhone);
+
+	let userMessages = await getAllMessagesFromDB(` AND (FROM_PHONE = '${userPhone}')`);
+
+	if (userMessages.length == 0) return null;
+
+	return userMessages.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())[0];
+};
+
+type Conversation = {
+	from: string;
+	body: string;
+	date: string;
+	name: string;
+};
+
+export const getMostRecentCustomerConversations = (): Promise<Conversation[]> => {
+	let query = `
+        SELECT FROM_PHONE, BODY, DATE, NAME
+        FROM SN_SMS s
+        WHERE DIRECTION = 'INBOUND'
+        AND DATE = (
+            SELECT MAX(DATE)
+            FROM SN_SMS
+            WHERE FROM_PHONE = s.FROM_PHONE
+            AND DIRECTION = 'INBOUND'
+        )
+        ORDER BY DATE DESC
+    `;
+
+	return new Promise((resolve, reject) => {
+		execPool.query(query).then((messages: any) => {
+			resolve(
+				messages.map((message: any) => ({
+					from: message.FROM_PHONE,
+					body: message.BODY,
+					date: message.DATE,
+					name: message.NAME,
+				})),
+			);
+		});
+	});
+};
+
 export class User {
 	name: string;
 	category_code: string;

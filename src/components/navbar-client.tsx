@@ -25,11 +25,24 @@ export default function NavbarClient({ user }: { user: User }) {
 	return (
 		<div className="flex flex-grow flex-row justify-center">
 			{isDesktop ? (
-				<></>
+				<Drawer>
+					<DrawerTrigger asChild>
+						<Button variant="outline" className="pl-1 text-white">
+							<CircleUser className="mx-2" />
+							View Profile
+						</Button>
+					</DrawerTrigger>
+					<DrawerContent>
+						<DrawerHeader>
+							<CustomerDataMobile user={user} />
+						</DrawerHeader>
+						<DrawerFooter></DrawerFooter>
+					</DrawerContent>
+				</Drawer>
 			) : (
 				<Drawer>
 					<DrawerTrigger asChild>
-						<Button className="pl-1 text-white">
+						<Button variant="outline" className="pl-1 text-white">
 							<CircleUser className="mx-2" />
 							View Profile
 						</Button>

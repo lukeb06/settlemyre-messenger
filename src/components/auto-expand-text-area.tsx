@@ -41,7 +41,6 @@ const AutoExpandTextArea = ({ cref, messages }: { cref: any; messages: Messages 
 
 					readChunk();
 				});
-				console.log('GET AI');
 			}
 		}
 	}, [messages]);

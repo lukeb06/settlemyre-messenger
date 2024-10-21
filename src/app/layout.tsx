@@ -34,7 +34,7 @@ const Main = async ({ children }: { children: React.ReactNode }) => {
 	}
 
 	return (
-		<main className="max-w-[1200px] overflow-hidden h-screen bg-background relative mx-auto">
+		<main className="max-w-[1200px] overflow-hidden h-screen bg-background relative mx-auto flex flex-col">
 			{children}
 		</main>
 	);

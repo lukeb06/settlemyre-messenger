@@ -1,5 +1,6 @@
 import { hash } from 'bun';
 import { Database } from 'bun:sqlite';
+import { getMostRecentUserMessage } from './ms-database';
 
 const db = new Database('database.db');
 const sql = (query: TemplateStringsArray, ...args: any[]) => {
@@ -149,6 +150,18 @@ export class LastRead {
 		let lastRead = LastRead.find(userId, custPhone);
 		if (lastRead) return lastRead.updateDate();
 		lastRead = LastRead.create(userId, custPhone);
+	}
+
+	static async getReadStatus(userId: number, custPhone: string) {
+		let lastRead = LastRead.find(userId, custPhone);
+
+		if (!lastRead) return false;
+
+		let mostRecentUserMessage = await getMostRecentUserMessage(custPhone);
+
+		if (!mostRecentUserMessage) return false;
+
+		return lastRead.date.getTime() >= new Date(mostRecentUserMessage.date).getTime();
 	}
 }
 

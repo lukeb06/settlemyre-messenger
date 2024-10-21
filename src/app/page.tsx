@@ -1,4 +1,5 @@
 import MessageArea from '@/components/message-area';
+import Conversations from '@/components/conversations';
 
 import Navbar from '@/components/navbar';
 
@@ -8,9 +9,12 @@ export default function Page() {
 	return (
 		<>
 			<Navbar />
-			<Loading>
-				<MessageArea className="w-full h-full" />
-			</Loading>
+			<div className="flex flex-row h-full">
+				<Conversations />
+				<Loading>
+					<MessageArea className="w-full h-full" />
+				</Loading>
+			</div>
 		</>
 	);
 }

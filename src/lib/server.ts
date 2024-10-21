@@ -32,6 +32,8 @@ export const SERVER = createTRPCClient<AppRouter>({
 
 export type Messages = Awaited<ReturnType<typeof SERVER.getMessages.query>>;
 export type User = Awaited<ReturnType<typeof SERVER.userProfile.query>>;
+export type Conversations = Awaited<ReturnType<typeof SERVER.getRecentConversations.query>>;
+export type Conversation = Conversations[number];
 
 let lastAITime = 0;
 
@@ -41,8 +43,6 @@ function canMakeAIRequest() {
 
 export const getSuggestedMessage = async (messages: Messages, stream: boolean = false) => {
 	if (!canMakeAIRequest()) return null;
-
-	console.log('GETTING AI');
 
 	lastAITime = Date.now();
 
