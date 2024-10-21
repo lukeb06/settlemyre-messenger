@@ -32,3 +32,54 @@ export const SERVER = createTRPCClient<AppRouter>({
 
 export type Messages = Awaited<ReturnType<typeof SERVER.getMessages.query>>;
 export type User = Awaited<ReturnType<typeof SERVER.userProfile.query>>;
+
+let lastAITime = 0;
+
+function canMakeAIRequest() {
+	return Date.now() - lastAITime > 3000;
+}
+
+export const getSuggestedMessage = async (messages: Messages, stream: boolean = false) => {
+	if (!canMakeAIRequest()) return null;
+
+	console.log('GETTING AI');
+
+	lastAITime = Date.now();
+
+	const response = await fetch(endpoint('getSuggestedMessage'), {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json',
+		},
+		body: JSON.stringify({ messages }),
+	});
+
+	if (stream) return response;
+
+	if (!response.body) return null;
+
+	const reader = response.body.getReader();
+
+	return new Promise((resolve, reject) => {
+		let text = '';
+
+		// Function to read chunks of data
+		const readChunk = (): any => {
+			return reader.read().then(({ done, value }) => {
+				if (done) return resolve(text);
+
+				// Decode the chunk of data (assuming UTF-8 encoding)
+				const textChunk = new TextDecoder('utf-8').decode(value);
+
+				// Process the text chunk
+				text += textChunk;
+				// console.log(textChunk);
+
+				// Read the next chunk
+				return readChunk();
+			});
+		};
+
+		readChunk();
+	});
+};

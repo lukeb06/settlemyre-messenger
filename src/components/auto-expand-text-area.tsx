@@ -2,11 +2,49 @@
 
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { useStore } from '@/hooks/use-store';
+import type { Messages } from '@/lib/server';
 
-const AutoExpandTextArea = ({ cref }: { cref: any }) => {
+import { getSuggestedMessage } from '@/lib/server';
+
+const AutoExpandTextArea = ({ cref, messages }: { cref: any; messages: Messages }) => {
 	const [store, setStore]: any = useStore();
+	const [updates, setUpdates]: any = useState(0);
+	const [ai, setAI] = useState('');
 
 	const tRef = useRef<HTMLTextAreaElement>(null);
+
+	useEffect(() => {
+		if (updates < 2) {
+			setUpdates(updates + 1);
+
+			if (messages && messages.length > 0) {
+				getSuggestedMessage(messages, true).then((response: any) => {
+					if (!response || !response.body) return;
+
+					const reader = response.body.getReader();
+
+					const readChunk = (): any => {
+						return reader.read().then(({ done, value }: any) => {
+							if (done) return;
+
+							// Decode the chunk of data (assuming UTF-8 encoding)
+							const textChunk = new TextDecoder('utf-8').decode(value);
+
+							// Process the text chunk
+							setAI(c => c + textChunk);
+							// console.log(textChunk);
+
+							// Read the next chunk
+							return readChunk();
+						});
+					};
+
+					readChunk();
+				});
+				console.log('GET AI');
+			}
+		}
+	}, [messages]);
 
 	const autoExpand = () => {
 		setTimeout(() => {
@@ -34,6 +72,12 @@ const AutoExpandTextArea = ({ cref }: { cref: any }) => {
 
 		window.onresize = autoExpand;
 	}, []);
+
+	useEffect(() => {
+		if (!tRef.current || !ai) return;
+		tRef.current.placeholder = ai;
+		autoExpand();
+	}, [ai]);
 
 	return (
 		<>

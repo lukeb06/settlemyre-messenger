@@ -26,18 +26,22 @@ function testDatabase() {
 	// This is already present and will create the tables.
 	buildDatabase();
 
-	// Create a new user with the given username and password. The password is hashed before being stored in the database.
+	// Create a new user with the given username and password.
+	// The password is hashed before being stored in the database.
 	Users.create('example_username', 'example_password');
 
-	// Create a new user with the given username, password, and display name.
+	// Create a new user with a display name.
 	Users.create('example_user', 'test123', 'Example User');
 }
+
+// You need to uncomment this line.
+// testDatebase();
 ```
 
 Now run the script:
 
 ```bash
-bun run server/database.ts
+bun run build:db
 ```
 
 Now you're database should be properly setup. Make sure to remove the test code from the database.ts file once you are done (to avoid pushing the credentials to GitHub).

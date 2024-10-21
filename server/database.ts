@@ -97,8 +97,64 @@ export class Users {
 	}
 }
 
+export class LastRead {
+	id: number;
+	userId: number;
+	custPhone: string;
+	lastRead: string;
+
+	constructor(id: number, userId: number, custPhone: string, lastRead: string) {
+		this.id = id;
+		this.userId = userId;
+		this.custPhone = custPhone;
+		this.lastRead = lastRead;
+	}
+
+	get date() {
+		return new Date(this.lastRead);
+	}
+
+	updateDate() {
+		LastRead.update(this.userId, this.custPhone);
+		this.lastRead = new Date().toISOString();
+	}
+
+	static get(id: number | bigint) {
+		return sql`SELECT * FROM lastRead WHERE id=?`.as(LastRead).get(id as number);
+	}
+
+	static find(userId: number, custPhone: string) {
+		return sql`SELECT * FROM lastRead WHERE userId=? AND custPhone=?`
+			.as(LastRead)
+			.get(userId, custPhone);
+	}
+
+	static update(userId: number, custPhone: string) {
+		return sql`UPDATE lastRead SET lastRead = CURRENT_TIMESTAMP WHERE userId=? AND custPhone=?`.run(
+			userId,
+			custPhone,
+		);
+	}
+
+	static create(userId: number, custPhone: string) {
+		const { lastInsertRowid } = sql`
+            INSERT INTO lastRead (userId, custPhone, lastRead)
+            VALUES (?, ?, CURRENT_TIMESTAMP)
+        `.run(userId, custPhone);
+
+		return LastRead.get(lastInsertRowid);
+	}
+
+	static read(userId: number, custPhone: string) {
+		let lastRead = LastRead.find(userId, custPhone);
+		if (lastRead) return lastRead.updateDate();
+		lastRead = LastRead.create(userId, custPhone);
+	}
+}
+
 function dropDatabase() {
 	dropTable('users');
+	dropTable('lastRead');
 }
 
 function buildDatabase() {
@@ -109,6 +165,13 @@ function buildDatabase() {
 		new Column('username', 'TEXT', 'UNIQUE NOT NULL'),
 		new Column('passwordHash', 'TEXT', 'NOT NULL'),
 		new Column('displayName', 'TEXT', 'NOT NULL'),
+	]);
+
+	createTable('lastRead', [
+		new PrimaryKey('id'),
+		new Column('userId', 'INTEGER', 'NOT NULL'),
+		new Column('custPhone', 'TEXT', 'NOT NULL'),
+		new Column('lastRead', 'DATETIME', 'NOT NULL DEFAULT CURRENT_TIMESTAMP'),
 	]);
 }
 

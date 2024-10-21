@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useMediaQuery } from '@/hooks/use-media-query';
 import type { Messages } from '@/lib/server';
-import { ImagePlus, Send } from 'lucide-react';
+import { ImagePlus, Send, Sparkles } from 'lucide-react';
 
 import React, { useRef, useState } from 'react';
 
@@ -89,20 +89,24 @@ export default function CustomerPageClient({ messages }: { messages: Messages })
 					ref={borderRef}
 					className="flex flex-grow items-center rounded-full border-2 px-3 pr-1"
 				>
-					<AutoExpandTextArea cref={messageBoxRef} />
+					<AutoExpandTextArea cref={messageBoxRef} messages={messages} />
 
-					{/* <Button
+					<Button
 						ref={pictureButtonRef}
 						className="my-1 mr-2 rounded-full text-base aspect-square"
 						size="icon"
-						variant="outline"
+						variant="ghost"
 						onClick={e => {
 							e.preventDefault();
-							pictureRef.current?.click();
+							// pictureRef.current?.click();
+							if (!messageBoxRef.current) return;
+							messageBoxRef.current.value = messageBoxRef.current.placeholder;
+							messageBoxRef.current.placeholder = 'Type a message...';
 						}}
 					>
-						<ImagePlus />
-					</Button> */}
+						{/* <ImagePlus /> */}
+						<Sparkles />
+					</Button>
 					{/* <Input
 						ref={pictureRef}
 						id="picture"
